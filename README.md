@@ -1,70 +1,117 @@
-# Getting Started with Create React App
+# Eduwork E-Commerce Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend aplikasi e-commerce yang dibangun dengan React.
 
-## Available Scripts
+## Dokumentasi
 
-In the project directory, you can run:
+Dokumentasi lengkap tersedia di direktori `docs/`:
 
-### `npm start`
+- [Struktur Project](docs/PROJECT_STRUCTURE.md) - Penjelasan tentang struktur direktori dan file
+- [Komponen](docs/COMPONENTS.md) - Dokumentasi komponen-komponen utama
+- [API](docs/API.md) - Dokumentasi endpoint API yang digunakan
+- [Panduan Pengembangan](docs/DEVELOPMENT_GUIDE.md) - Panduan untuk pengembang
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Fitur Utama
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Autentikasi pengguna (login/register)
+- Katalog produk dengan kategori dan tag
+- Pencarian produk
+- Keranjang belanja
+- Checkout dan pemesanan
+- Manajemen alamat pengiriman
+- Riwayat pesanan dan faktur
 
-### `npm test`
+## Teknologi yang Digunakan
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- React.js
+- React Router
+- React Query
+- Redux Toolkit
+- CSS Modular
+- Axios
+- Jest dan React Testing Library
 
-### `npm run build`
+## Cara Instalasi
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prasyarat
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js (versi 14.x atau lebih tinggi)
+- npm (versi 6.x atau lebih tinggi) atau yarn (versi 1.22.x atau lebih tinggi)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Langkah-langkah Instalasi
 
-### `npm run eject`
+1. Clone repository:
+   ```bash
+   git clone https://github.com/username/eduwork-ecommerce.git
+   cd eduwork-ecommerce/eduwork-client
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Instal dependencies:
+   ```bash
+   npm install
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Buat file `.env`:
+   ```
+   REACT_APP_API_URL=http://localhost:3000/api
+   REACT_APP_STORAGE_URL=http://localhost:3000/uploads
+   REACT_APP_VERSION=1.0.0
+   REACT_APP_ENV=development
+   REACT_APP_DEBUG=true
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Cara Menjalankan Aplikasi
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Development Mode
 
-## Learn More
+```bash
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Aplikasi akan berjalan di [http://localhost:3001](http://localhost:3001).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Production Build
 
-### Code Splitting
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Menjalankan Test
 
-### Analyzing the Bundle Size
+```bash
+npm test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Struktur Direktori
 
-### Making a Progressive Web App
+```
+eduwork-client/
+├── public/                  # File statis
+├── src/                     # Source code
+│   ├── api/                 # Konfigurasi API
+│   ├── assets/              # Asset statis (gambar, font, dll)
+│   ├── components/          # Komponen React
+│   ├── constants/           # Konstanta
+│   ├── features/            # Fitur (Redux Toolkit)
+│   ├── hooks/               # Custom hooks
+│   ├── layouts/             # Layout komponen
+│   ├── pages/               # Halaman
+│   ├── providers/           # Context providers
+│   ├── styles/              # File CSS
+│   ├── utils/               # Utilitas
+│   ├── App.js               # Komponen utama
+│   ├── index.js             # Entry point
+│   └── store.js             # Redux store
+├── docs/                    # Dokumentasi
+├── .env                     # Environment variables
+├── package.json             # Dependencies
+└── README.md                # Dokumentasi utama
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Kontribusi
 
-### Advanced Configuration
+Silakan baca [Panduan Pengembangan](docs/DEVELOPMENT_GUIDE.md) untuk informasi tentang cara berkontribusi ke project ini.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Lisensi
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT

@@ -1,22 +1,15 @@
 import React from "react";
+import "../styles/footer.css";
 
 const Footer = () => {
   return (
-    <footer style={styles.footer}>
+    <footer className="footer">
       <p>
-        &copy; {new Date().getFullYear()} Edustore Company. All rights reserved.
+        &copy; {new Date().getFullYear()} Foodstore Company. All rights
+        reserved.
       </p>
     </footer>
   );
-};
-
-const styles = {
-  footer: {
-    backgroundColor: "#4a90e2",
-    color: "#fff",
-    textAlign: "center",
-    padding: "15px 0",
-  },
 };
 
 export default Footer;

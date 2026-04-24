@@ -41,3 +41,136 @@
 .circle:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+/* Loading Fallback Styles - Improved */
+.loading-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--neutral-50, #f9fafb);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
+  margin: 2rem auto;
+  max-width: 500px;
+  transition: all 0.3s ease;
+  will-change: transform, opacity;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.loading-fallback p {
+  margin-top: 1.5rem;
+  color: var(--neutral-700, #616161);
+  font-size: 1.1rem;
+  font-weight: 500;
+  max-width: 80%;
+  line-height: 1.5;
+}
+
+/* Loading Spinner - Improved */
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid var(--neutral-200, #e9ecef);
+  border-radius: 50%;
+  border-top-color: var(--primary-color, #4a90e2);
+  animation: spin 1s cubic-bezier(0.4, 0.1, 0.3, 1) infinite;
+  will-change: transform;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade in animation for loading fallback */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Page Loading Overlay */
+.page-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Inline Loading */
+.inline-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.inline-loading .loading-spinner {
+  width: 30px;
+  height: 30px;
+  border-width: 3px;
+}
+
+.inline-loading p {
+  margin-left: 0.5rem;
+  color: var(--neutral-700, #616161);
+  font-size: 0.875rem;
+}
+
+/* Button Loading State */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .loading-fallback {
+    min-height: 200px;
+    padding: 1rem;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .loading-fallback p {
+    font-size: 0.875rem;
+  }
+}

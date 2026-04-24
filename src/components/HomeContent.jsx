@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import HomeTitle from "./main/HomeTitle";
-import Tags from "./main/Tags";
-import MenuItems from "./main/MenuItems";
+import HomeTitle from "./main/HomeTitle.jsx";
+import Tags from "./main/Tags.jsx";
+import MenuItems from "./main/MenuItems.jsx";
 import Loading from "../pages/Loading";
-import Footer from "./Footer";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
+import "../styles/main.css";
 
 export default function HomeContent({ searchKeyword, selectedCategory }) {
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,6 @@ export default function HomeContent({ searchKeyword, selectedCategory }) {
             searchKeyword={searchKeyword}
             selectedCategory={selectedCategory}
           />
-          <Footer />
         </div>
       )}
     </>

@@ -1,15 +1,32 @@
-html,
-body {
-  height: 100%;
-  margin: 0;
+/* App-specific layout styles */
+
+/* Ensure root takes full height for flex */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1; /* Make container grow to fill space */
+  width: 100%; /* Ensure container takes full width */
+  max-width: 100%; /* Ensure no max-width limitation */
+  box-sizing: border-box;
 }
 
-.container > *:not(footer) {
+/* Remove the old rule targeting children */
+/* .container > *:not(footer) {
   flex: 1;
+} */
+
+/* Add a general main content area styling */
+main {
+  flex: 1; /* Allow main content to grow */
+  width: 100%;
+  max-width: 1280px; /* Add a max-width for larger screens */
+  margin: 0 auto; /* Center content */
+  box-sizing: border-box; /* Include padding in width calculation */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }

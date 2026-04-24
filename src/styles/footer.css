@@ -1,0 +1,19 @@
+/* src/styles/footer.css */
+.footer {
+  background: linear-gradient(
+    to right,
+    var(--primary-dark),
+    var(--primary-color)
+  ); /* Match header gradient */
+  color: var(--neutral-100); /* White text for better contrast */
+  text-align: center;
+  padding: var(--spacing-md) 0; /* Use design system spacing */
+  margin-top: auto; /* Push footer to the bottom */
+  font-size: var(--font-size-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.footer p {
+  margin: 0;
+}

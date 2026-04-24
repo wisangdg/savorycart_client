@@ -1,25 +1,24 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import "../styles/account.css";
-import Header from "../components/Header.jsx";
+import MainLayout from "../layouts/MainLayout";
 import Profile from "../components/Profile.jsx";
 import Address from "../components/Address.jsx";
 import Order from "../components/Order.jsx";
-import { logout } from "../store";
+import { useAuth } from "../hooks";
 
 export default function Account() {
   const [currentView, setCurrentView] = useState("Profile");
   const [showConfirm, setShowConfirm] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     setShowConfirm(true);
   };
 
   const confirmLogout = () => {
-    dispatch(logout());
+    logout();
     navigate("/", { replace: true });
   };
 
@@ -41,8 +40,7 @@ export default function Account() {
   };
 
   return (
-    <>
-      <Header />
+    <MainLayout>
       <div className="account">
         <div className="account-left">
           <h1 className="account-title">Account</h1>
@@ -87,6 +85,6 @@ export default function Account() {
           </div>
         )}
       </div>
-    </>
+    </MainLayout>
   );
 }

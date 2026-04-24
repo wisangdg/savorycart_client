@@ -1,0 +1,204 @@
+/* Base skeleton styles */
+.skeleton-card {
+  background-color: var(--neutral-100, #f8f9fa);
+  border-radius: var(--border-radius-md, 8px);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, opacity; /* Optimize for animations */
+  transform: translateZ(0); /* Force GPU acceleration */
+  transition: all 0.3s ease;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 180px;
+  background-color: var(--neutral-200, #e9ecef);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 80%;
+  background-color: var(--neutral-200, #e9ecef);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+  background-color: var(--neutral-200, #e9ecef);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-price {
+  height: 20px;
+  width: 40%;
+  background-color: var(--neutral-200, #e9ecef);
+  border-radius: 4px;
+  margin-top: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-button {
+  height: 36px;
+  width: 100%;
+  background-color: var(--neutral-200, #e9ecef);
+  border-radius: 4px;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Skeleton list layout - optimized with CSS Grid */
+.skeleton-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  contain: layout style; /* Improve rendering performance */
+}
+
+/* Skeleton tag styles */
+.skeleton-tag {
+  height: 32px;
+  width: 100px;
+  background-color: var(--neutral-200, #e9ecef);
+  border-radius: 16px;
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+  contain: layout style; /* Improve rendering performance */
+}
+
+/* Shimmer animation - more performant than opacity changes */
+.pulse {
+  position: relative;
+}
+
+.pulse::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+  transform: translateX(-100%);
+  will-change: transform; /* Optimize animation performance */
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Staggered animation for multiple items */
+.skeleton-list .skeleton-card:nth-child(1) .pulse::after {
+  animation-delay: 0s;
+}
+.skeleton-list .skeleton-card:nth-child(2) .pulse::after {
+  animation-delay: 0.1s;
+}
+.skeleton-list .skeleton-card:nth-child(3) .pulse::after {
+  animation-delay: 0.2s;
+}
+.skeleton-list .skeleton-card:nth-child(4) .pulse::after {
+  animation-delay: 0.3s;
+}
+.skeleton-list .skeleton-card:nth-child(5) .pulse::after {
+  animation-delay: 0.4s;
+}
+.skeleton-list .skeleton-card:nth-child(6) .pulse::after {
+  animation-delay: 0.5s;
+}
+
+/* Staggered animation for tag items */
+.skeleton-tag-list .skeleton-tag:nth-child(1)::after {
+  animation-delay: 0s;
+}
+.skeleton-tag-list .skeleton-tag:nth-child(2)::after {
+  animation-delay: 0.1s;
+}
+.skeleton-tag-list .skeleton-tag:nth-child(3)::after {
+  animation-delay: 0.2s;
+}
+.skeleton-tag-list .skeleton-tag:nth-child(4)::after {
+  animation-delay: 0.3s;
+}
+.skeleton-tag-list .skeleton-tag:nth-child(5)::after {
+  animation-delay: 0.4s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .skeleton-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .skeleton-card {
+    min-height: 280px;
+  }
+
+  .skeleton-image {
+    height: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .skeleton-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .skeleton-card {
+    min-height: 260px;
+  }
+
+  .skeleton-image {
+    height: 140px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after {
+    animation: none;
+  }
+}

@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import HomeContent from "../components/HomeContent";
-import Header from "../components/Header";
-import { useState } from "react";
+import MainLayout from "../layouts/MainLayout";
 
 export default function Home({
   searchKeyword,
@@ -15,16 +14,15 @@ export default function Home({
     setSelectedCategory(category._id === "all" ? null : category); // If 'Semua' is selected, set to null to show all products
   };
   return (
-    <div>
-      <Header
-        handleSearchChange={handleSearchChange}
-        categories={categories}
-        onSelectCategory={handleCategorySelect}
-      />
+    <MainLayout
+      handleSearchChange={handleSearchChange}
+      categories={categories}
+      onSelectCategory={handleCategorySelect}
+    >
       <HomeContent
         searchKeyword={searchKeyword}
         selectedCategory={selectedCategory}
       />
-    </div>
+    </MainLayout>
   );
 }

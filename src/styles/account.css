@@ -1,14 +1,52 @@
-:root {
-  --primary-color: #ffffff;
-  --secondary-color: #f8f9fa;
-  --hover-color: #e7f1ff;
-  --text-color: #2d3436;
-  --hover-text-color: #007bff;
-  --active-color: #007bff;
-  --active-text-color: #ffffff;
-  --border-color: #e9ecef;
-  --border-radius: 12px;
-  --transition-duration: 0.2s;
+/* Account Header Styles */
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  box-sizing: border-box;
+  max-height: 36px;
+}
+
+.header-profile:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.header-profile:active,
+.header-profile:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transform: none;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.header-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: var(--font-size-sm);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+.profile-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: white;
 }
 
 .account {
@@ -167,5 +205,26 @@
   .account-title {
     font-size: 20px;
     margin-bottom: 15px;
+  }
+}
+
+/* Prevent size changes on active state */
+.header-profile:active .header-icon-wrapper,
+.header-profile:focus .header-icon-wrapper {
+  transform: none;
+}
+
+/* Responsive styles for profile avatar */
+@media (max-width: 640px) {
+  .header-profile {
+    max-height: 28px;
+    width: 28px;
+    height: 28px;
+    padding: var(--spacing-xs);
+  }
+  .header-icon-wrapper {
+    width: 20px;
+    height: 20px;
+    border-width: 1px;
   }
 }

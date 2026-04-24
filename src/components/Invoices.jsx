@@ -1,7 +1,8 @@
 import axiosInstance from "../api/axiosInstance";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import MainLayout from "../layouts/MainLayout";
 import "../styles/invoices.css";
 
 const Invoices = () => {
@@ -41,36 +42,38 @@ const Invoices = () => {
   if (error) return <p className="error">Error: {error}</p>;
 
   return (
-    <div className="invoice-container">
-      <h1>Invoice</h1>
-      {invoice && (
-        <div>
-          <h2>Order Number: {invoice.order?.order_number}</h2>
-          <p>Subtotal: Rp. {invoice.sub_total?.toLocaleString()}</p>
-          <p>Delivery Fee: Rp. {invoice.delivery_fee?.toLocaleString()}</p>
-          <p>Total: Rp. {invoice.total?.toLocaleString()}</p>
-          <h3>Delivery Address:</h3>
-          <p>
-            {invoice.delivery_address?.detail},{" "}
-            {invoice.delivery_address?.kelurahan},{" "}
-            {invoice.delivery_address?.kecamatan},{" "}
-            {invoice.delivery_address?.kabupaten},{" "}
-            {invoice.delivery_address?.provinsi}
-          </p>
-          <h3>Items:</h3>
-          <ul>
-            {invoice.order_items?.map((item) => (
-              <li key={item._id}>
-                {item.name} - {item.qty}x @ Rp. {item.price?.toLocaleString()}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <button className="back-home-button" onClick={() => navigate("/")}>
-        Back to Home
-      </button>
-    </div>
+    <MainLayout>
+      <div className="invoice-container">
+        <h1>Invoice</h1>
+        {invoice && (
+          <div>
+            <h2>Order Number: {invoice.order?.order_number}</h2>
+            <p>Subtotal: Rp. {invoice.sub_total?.toLocaleString()}</p>
+            <p>Delivery Fee: Rp. {invoice.delivery_fee?.toLocaleString()}</p>
+            <p>Total: Rp. {invoice.total?.toLocaleString()}</p>
+            <h3>Delivery Address:</h3>
+            <p>
+              {invoice.delivery_address?.detail},{" "}
+              {invoice.delivery_address?.kelurahan},{" "}
+              {invoice.delivery_address?.kecamatan},{" "}
+              {invoice.delivery_address?.kabupaten},{" "}
+              {invoice.delivery_address?.provinsi}
+            </p>
+            <h3>Items:</h3>
+            <ul>
+              {invoice.order_items?.map((item) => (
+                <li key={item._id}>
+                  {item.name} - {item.qty}x @ Rp. {item.price?.toLocaleString()}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <button className="back-home-button" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
+      </div>
+    </MainLayout>
   );
 };
 

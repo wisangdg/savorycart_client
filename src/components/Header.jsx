@@ -1,9 +1,9 @@
 import React from "react";
-import Logo from "./header/Logo";
-import Kategori from "./header/Kategori";
-import Search from "./header/Search";
-import CartList from "./header/CartList";
-import AccountIcon from "./header/AccountIcon";
+import Logo from "./header/Logo.jsx";
+import Kategori from "./header/Kategori.jsx";
+import Search from "./header/Search.jsx";
+import CartList from "./header/CartList.jsx";
+import AccountIcon from "./header/AccountIcon.jsx";
 import "../styles/main.css";
 
 const categoryNameMap = {

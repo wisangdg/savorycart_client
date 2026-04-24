@@ -1,91 +1,131 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router";
-import { useDispatch } from "react-redux";
-import axiosInstance from "../api/axiosInstance.js";
-import Header from "../components/Header.jsx";
-import { setCredentials } from "../store";
+import { useNavigate, Link } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
+import MainLayout from "../layouts/MainLayout";
+import { useAuth } from "../hooks";
 import "../styles/auth.css";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      alert("Please enter both email and password");
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      alert("Please enter a valid email address");
-      return;
-    }
+  // CSS variables are now defined in variables.css
+
+  // Skema validasi dengan Yup
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Format email tidak valid")
+      .required("Email harus diisi"),
+    password: Yup.string()
+      .min(6, "Password minimal 6 karakter")
+      .required("Password harus diisi"),
+  });
+
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log("Sending request to /auth/login with:", { email, password });
-      const response = await axiosInstance.post("/auth/login", {
-        email: email,
-        password: password,
-      });
-      console.log("Response:", response.data);
+      // Gunakan useAuth hook untuk login
+      const result = await login(values.email, values.password);
 
-      if (response.status === 200) {
-        const { token, user } = response.data;
-        // Simpan credentials ke Redux store
-        dispatch(
-          setCredentials({
-            token: token,
-            user: user,
-          })
-        );
+      if (result.success) {
+        // Tampilkan pesan sukses
+        console.log("Login berhasil!");
+
         // Redirect ke halaman home atau dashboard
         navigate("/", { replace: true });
+      } else {
+        // Jika login gagal
+        setLoginError(
+          result.message || "Gagal login, periksa email dan password"
+        );
       }
     } catch (error) {
       console.error("Login failed:", error);
-      alert(
-        error.response?.data?.message || "Failed to submit email or password"
-      );
+      setLoginError(error.message || "Gagal login, periksa email dan password");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div>
-      <Header />
+    <MainLayout>
       <div className="login">
         <h1 className="login-title">Login</h1>
-        <form className="login-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={email}
-            placeholder="Email"
-            id="login-email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            id="login-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button
-            type="submit"
-            id="login-button"
-            disabled={!email || !password}
-          >
-            Login
-          </button>
-        </form>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting, errors, touched }) => (
+            <Form className="login-form">
+              <div className="form-group">
+                <div className="input-with-icon">
+                  <FaEnvelope className="input-icon" />
+                  <Field
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    id="login-email"
+                    className={`form-control ${
+                      errors.email && touched.email ? "error" : ""
+                    }`}
+                    aria-label="Email address"
+                  />
+                </div>
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="form-error"
+                />
+              </div>
+
+              <div className="form-group">
+                <div className="input-with-icon">
+                  <FaLock className="input-icon" />
+                  <Field
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    id="login-password"
+                    className={`form-control ${
+                      errors.password && touched.password ? "error" : ""
+                    }`}
+                    aria-label="Password"
+                  />
+                </div>
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="form-error"
+                />
+              </div>
+
+              {loginError && (
+                <div className="message message-error">{loginError}</div>
+              )}
+
+              <button
+                type="submit"
+                id="login-button"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                aria-label="Login to your account"
+              >
+                {isSubmitting ? "Logging in..." : "Login"}
+              </button>
+            </Form>
+          )}
+        </Formik>
         <p>or</p>
         <button type="submit" id="register-redirect">
           <Link to={"/register"} className="register-link">
-            Sign Up
+            <FaUserPlus className="register-icon" /> Sign Up
           </Link>
         </button>
       </div>
-    </div>
+    </MainLayout>
   );
 }
 
