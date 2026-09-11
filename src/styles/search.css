@@ -1,71 +1,77 @@
 /* Search Styles */
 .header-search {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
+	position: relative;
+	width: 100%;
+	max-width: 400px;
 }
 
 .search-input {
-  width: 100%;
-  padding: 10px 16px 10px 40px;
-  border: none;
-  border-radius: var(--border-radius-full);
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
-  outline: none;
-  min-width: 250px;
+	width: 100%;
+	padding: 10px 16px 10px 40px;
+	border: none;
+	border-radius: var(--border-radius-full);
+	background-color: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	color: white;
+	font-size: var(--font-size-sm);
+	transition: all var(--transition-fast);
+	outline: none;
 }
 
 .search-input::placeholder {
-  color: white;
+	color: white;
 }
 
 .search-input:focus {
-  background-color: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-  width: 100%;
-  min-width: 300px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
 }
 
 .search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  font-size: 14px;
-  pointer-events: none;
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: white;
+	font-size: 14px;
+	pointer-events: none;
 }
 
-/* Mobile search */
+/* Desktop search terlihat secara default, disembunyikan saat header mobile. */
+.desktop-search {
+	display: block;
+}
+
+/* Mobile search disembunyikan secara default */
 .mobile-search {
-  margin: var(--spacing-md) 0;
-  display: none; /* Sembunyikan secara default */
+	display: none;
+	margin: var(--spacing-md) 0;
 }
 
 .mobile-search .header-search {
-  max-width: 100%;
+	max-width: 100%;
 }
 
-/* Tampilkan mobile search hanya pada layar kecil */
-@media (max-width: 991px) {
-  .mobile-search {
-    display: block;
-  }
+@media (max-width: 1024px) {
+	.mobile-search {
+		display: block;
+	}
 
-  /* Sembunyikan search desktop pada layar kecil */
-  .d-none.d-md-block .header-search {
-    display: none;
-  }
+	.desktop-search {
+		display: none;
+	}
 }
 
-/* Sembunyikan mobile search pada layar besar */
-@media (min-width: 992px) {
-  .mobile-search {
-    display: none;
-  }
+/* Di layar sempit, pastikan input pencarian tidak melebihi viewport. */
+@media (max-width: 768px) {
+	.header-search {
+		max-width: 100%;
+	}
+
+	.search-input,
+	.search-input:focus {
+		width: 100%;
+		min-width: 0;
+	}
 }

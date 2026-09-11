@@ -1,111 +1,117 @@
 /* Accessibility Styles */
 
+/* Offset agar anchor #menu-heading tidak tertutup header sticky */
+#menu-heading,
+[id="menu-heading"] {
+	scroll-margin-top: 5rem;
+}
+
 /* Skip link - hidden until focused */
 .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
 }
 
 .visually-hidden.focusable:active,
 .visually-hidden.focusable:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
+	position: static;
+	width: auto;
+	height: auto;
+	margin: 0;
+	overflow: visible;
+	clip: auto;
 }
 
 /* Skip link styling */
 .skip-link a {
-  background: var(--primary-color);
-  color: white;
-  font-weight: bold;
-  padding: 12px 20px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10000;
-  transform: translateY(-100%);
-  transition: transform 0.3s;
-  text-decoration: none;
-  border-radius: 0 0 var(--border-radius-md) 0;
-  box-shadow: var(--shadow-md);
+	background: var(--primary-color);
+	color: white;
+	font-weight: bold;
+	padding: 12px 20px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10000;
+	transform: translateY(-100%);
+	transition: transform 0.3s;
+	text-decoration: none;
+	border-radius: 0 0 var(--border-radius-md) 0;
+	box-shadow: var(--shadow-md);
 }
 
 .skip-link a:focus {
-  transform: translateY(0);
+	transform: translateY(0);
 }
 
 /* Focus styles */
 :focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 :focus:not(:focus-visible) {
-  outline: none;
-  box-shadow: none;
+	outline: none;
+	box-shadow: none;
 }
 
 :focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
 }
 
 /* Keyboard focus indicator */
 .keyboard-focus-indicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: var(--primary-color);
-  transform: scaleX(0);
-  transition: transform 0.3s ease-in-out;
-  z-index: 10000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background-color: var(--primary-color);
+	transform: scaleX(0);
+	transition: transform 0.3s ease-in-out;
+	z-index: 10000;
 }
 
 body.keyboard-navigation .keyboard-focus-indicator {
-  transform: scaleX(1);
+	transform: scaleX(1);
 }
 
 /* High contrast mode support */
 @media (forced-colors: active) {
-  .btn-cart {
-    border: 2px solid ButtonText;
-  }
+	.btn-cart {
+		border: 2px solid ButtonText;
+	}
 
-  .menu-item {
-    border: 1px solid ButtonText;
-  }
+	.menu-item {
+		border: 1px solid ButtonText;
+	}
 
-  .tag-item {
-    border: 1px solid ButtonText;
-  }
+	.tag-item {
+		border: 1px solid ButtonText;
+	}
 
-  .tag-item.active {
-    border: 2px solid Highlight;
-  }
+	.tag-item.active {
+		border: 2px solid Highlight;
+	}
 
-  /* Ensure buttons are visible in high contrast mode */
-  button,
-  .btn,
-  [role="button"] {
-    border: 1px solid ButtonText;
-  }
+	/* Ensure buttons are visible in high contrast mode */
+	button,
+	.btn,
+	[role="button"] {
+		border: 1px solid ButtonText;
+	}
 
-  /* Ensure links are visible in high contrast mode */
-  a {
-    text-decoration: underline;
-  }
+	/* Ensure links are visible in high contrast mode */
+	a {
+		text-decoration: underline;
+	}
 }
 
 /* Improved focus for interactive elements */
@@ -121,123 +127,130 @@ textarea:focus-visible,
 [role="radio"]:focus-visible,
 [role="option"]:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
+}
+
+/* Kontrol di atas latar navy (header/hero) butuh indikator terang */
+.hero-cta:focus-visible,
+.header-logo:focus-visible {
+	outline: 2px solid var(--neutral-100);
+	outline-offset: 3px;
 }
 
 /* Improved contrast for text */
 .menu-description {
-  color: var(--neutral-800); /* Darker text for better contrast */
+	color: var(--neutral-800); /* Darker text for better contrast */
 }
 
 .menu-price {
-  color: var(--neutral-900);
-  font-weight: bold;
+	color: var(--neutral-900);
+	font-weight: bold;
 }
 
 /* Improved focus for menu items */
 .menu-item:focus-visible {
-  outline: 2px solid var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
+	outline: 2px solid var(--primary-color);
+	box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
 }
 
 /* Improved focus for tag items */
 .tag-item:focus-visible {
-  outline: 2px solid var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
+	outline: 2px solid var(--primary-color);
+	box-shadow: 0 0 0 4px rgba(30, 75, 138, 0.3);
 }
 
 /* Improved focus for dropdown items */
 .dropdown-menu li:focus-visible {
-  outline: 2px solid var(--primary-color);
-  background-color: rgba(30, 75, 138, 0.1);
+	outline: 2px solid var(--primary-color);
+	background-color: rgba(30, 75, 138, 0.1);
 }
 
 /* Disabled state for pagination buttons */
 .pagination-nav-button:disabled {
-  background-color: var(--neutral-400);
-  color: var(--neutral-600);
-  cursor: not-allowed;
-  opacity: 0.7;
+	background-color: var(--neutral-400);
+	color: var(--neutral-600);
+	cursor: not-allowed;
+	opacity: 0.7;
 }
 
 /* Improved contrast for error messages */
 .error-message,
 .message-error {
-  color: var(--secondary-dark);
-  font-weight: bold;
-  background-color: rgba(216, 48, 48, 0.1);
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid var(--secondary-color);
+	color: var(--secondary-dark);
+	font-weight: bold;
+	background-color: rgba(216, 48, 48, 0.1);
+	padding: 10px;
+	border-radius: 4px;
+	border-left: 4px solid var(--secondary-color);
 }
 
 /* Improved screen reader only text */
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
 }
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 
-  .keyboard-focus-indicator {
-    transition: none !important;
-  }
+	.keyboard-focus-indicator {
+		transition: none !important;
+	}
 }
 
 /* Improved contrast for success messages */
 .message-success {
-  color: #2e7d32;
-  font-weight: bold;
-  background-color: #e8f5e9;
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid #2e7d32;
+	color: #2e7d32;
+	font-weight: bold;
+	background-color: #e8f5e9;
+	padding: 10px;
+	border-radius: 4px;
+	border-left: 4px solid #2e7d32;
 }
 
 /* Improved contrast for warning messages */
 .message-warning {
-  color: #f57c00;
-  font-weight: bold;
-  background-color: #fff3e0;
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid #f57c00;
+	color: #f57c00;
+	font-weight: bold;
+	background-color: #fff3e0;
+	padding: 10px;
+	border-radius: 4px;
+	border-left: 4px solid #f57c00;
 }
 
 /* Improved contrast for info messages */
 .message-info {
-  color: #0288d1;
-  font-weight: bold;
-  background-color: #e1f5fe;
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid #0288d1;
+	color: #0288d1;
+	font-weight: bold;
+	background-color: #e1f5fe;
+	padding: 10px;
+	border-radius: 4px;
+	border-left: 4px solid #0288d1;
 }
 
 /* Improved contrast for error messages */
 .message-error {
-  color: #d32f2f;
-  font-weight: bold;
-  background-color: #ffebee;
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid #d32f2f;
+	color: #d32f2f;
+	font-weight: bold;
+	background-color: #ffebee;
+	padding: 10px;
+	border-radius: 4px;
+	border-left: 4px solid #d32f2f;
 }

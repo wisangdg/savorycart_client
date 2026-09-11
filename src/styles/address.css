@@ -1,167 +1,229 @@
+/* Address Styles — kartu alamat yang dapat dipilih + form dengan error dekat field. */
+
 .address-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+	max-width: 640px;
+	margin: 0 auto;
+	padding: var(--spacing-lg);
+	border: 1px solid var(--neutral-300);
+	border-radius: var(--border-radius-lg);
+	background-color: var(--neutral-200);
 }
 
-h1 {
-  text-align: center;
-  color: #333;
+.address-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-lg);
 }
 
-.error {
-  color: red;
-  text-align: center;
+.address-header h1 {
+	font-size: var(--font-size-xl);
+	color: var(--neutral-900);
+	margin: 0;
+	text-align: left;
 }
 
+.address-container .error {
+	color: var(--error-color);
+	margin: 0 0 var(--spacing-sm);
+}
+
+.address-loading {
+	color: var(--neutral-600);
+}
+
+/* Daftar kartu alamat */
 .address-list {
-  list-style-type: none;
-  padding: 0;
+	list-style: none;
+	padding: 0;
+	margin: 0 0 var(--spacing-md);
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
 }
 
 .address-item {
-  cursor: pointer;
-  padding: 15px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+	display: block;
+	width: 100%;
+	text-align: left;
+	font-family: inherit;
+	font-size: var(--font-size-sm);
+	padding: var(--spacing-md);
+	border: 2px solid var(--neutral-300);
+	border-radius: var(--border-radius-md);
+	background-color: var(--neutral-100);
+	color: var(--neutral-800);
+	cursor: pointer;
+	transition:
+		border-color var(--transition-fast),
+		background-color var(--transition-fast);
 }
 
 .address-item:hover {
-  background-color: #f5f5f5;
+	border-color: var(--primary-light);
+	background-color: var(--neutral-200);
 }
 
 .address-item.selected {
-  border: 2px solid #4caf50;
-  background-color: #f0f7f0;
+	border-color: var(--success-color);
+	background-color: rgba(40, 167, 69, 0.08);
 }
 
 .address-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--spacing-md);
 }
 
 .address-text {
-  flex: 1;
+	flex: 1;
+	line-height: var(--line-height-normal);
 }
 
 .address-actions {
-  margin-left: 15px;
+	flex-shrink: 0;
 }
 
 .selected-badge {
-  color: #4caf50;
-  font-weight: bold;
+	color: var(--success-color);
+	font-weight: var(--font-weight-semibold);
+	white-space: nowrap;
 }
 
-.select-address-btn {
-  padding: 5px 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.select-hint {
+	color: var(--primary-color);
+	font-weight: var(--font-weight-medium);
+	white-space: nowrap;
 }
 
-.select-address-btn:hover {
-  background-color: #45a049;
+/* Tombol tambah alamat */
+.add-address-button {
+	padding: var(--spacing-sm) var(--spacing-md);
+	background-color: var(--primary-color);
+	color: white;
+	border: none;
+	border-radius: var(--border-radius-md);
+	cursor: pointer;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	white-space: nowrap;
+	transition: background-color var(--transition-fast);
 }
 
-.add-address-button,
-.submit-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
+.add-address-button:hover {
+	background-color: var(--primary-light);
 }
 
-.add-address-button:hover,
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
+/* Form */
 .address-form {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	margin-top: var(--spacing-md);
+	padding-top: var(--spacing-md);
+	border-top: 1px solid var(--neutral-300);
 }
 
-.form-input {
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.address-form-title {
+	margin: 0 0 var(--spacing-xs);
+	font-size: var(--font-size-md);
+	color: var(--neutral-900);
 }
 
-/* Media queries untuk responsivitas */
-@media (max-width: 768px) {
-  .address-container {
-    max-width: 90%;
-    padding: 15px;
-  }
+.address-field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xxs);
+}
 
-  h1 {
-    font-size: 1.5rem;
-  }
+.address-field label {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--neutral-700);
+}
 
-  .address-item {
-    padding: 12px;
-  }
+/* Dilingkupi .address-form agar tidak menimpa gaya form login/register. */
+.address-form .form-input {
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-md);
+	border: 1px solid var(--neutral-400);
+	border-radius: var(--border-radius-md);
+	font-size: var(--font-size-md);
+	transition: border-color var(--transition-fast);
+}
 
-  .address-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.address-form .form-input:focus {
+	border-color: var(--primary-color);
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(30, 75, 138, 0.12);
+}
 
-  .address-actions {
-    margin-left: 0;
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
+.address-form .form-input.input-error {
+	border-color: var(--error-color);
+}
 
-  .select-address-btn {
-    padding: 4px 8px;
-    font-size: 0.9rem;
-  }
+.field-error {
+	margin: 0;
+	font-size: var(--font-size-xs);
+	color: var(--error-color);
+}
 
-  .add-address-button,
-  .submit-button {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
+.address-form-actions {
+	display: flex;
+	gap: var(--spacing-sm);
+	margin-top: var(--spacing-xs);
+}
+
+.address-form-actions .btn,
+.address-form-actions .submit-button {
+	flex: 1;
+	padding: var(--spacing-sm) var(--spacing-md);
+	border: none;
+	border-radius: var(--border-radius-md);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	cursor: pointer;
+}
+
+.address-form-actions .submit-button {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.address-form-actions .submit-button:hover:not(:disabled) {
+	background-color: var(--primary-light);
+}
+
+.address-form-actions .submit-button:disabled {
+	background-color: var(--neutral-400);
+	cursor: not-allowed;
+}
+
+.address-error {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	align-items: flex-start;
+	margin-bottom: var(--spacing-md);
 }
 
 @media (max-width: 576px) {
-  .address-container {
-    max-width: 100%;
-    padding: 10px;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
+	.address-container {
+		max-width: 100%;
+		padding: var(--spacing-md);
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+	}
 
-  h1 {
-    font-size: 1.3rem;
-  }
+	.address-content {
+		flex-direction: column;
+		align-items: flex-start;
+	}
 
-  .address-item {
-    padding: 10px;
-    margin-bottom: 8px;
-  }
-
-  .form-input {
-    padding: 8px;
-  }
+	.address-actions {
+		width: 100%;
+	}
 }

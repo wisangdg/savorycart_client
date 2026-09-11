@@ -4,37 +4,37 @@
 *,
 html,
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 /* Reset body and html to ensure full width */
 body,
 html {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
 }
 
 /* Ensure full width for app container */
 #root,
 .app-container {
-  width: 100%;
-  max-width: 100%;
+	width: 100%;
+	max-width: 100%;
 }
 
 /* Main content area styling */
 main {
-  flex: 1; /* Allow main content to grow */
-  padding: 0; /* Remove padding as it's handled by child components */
-  width: 100%;
-  max-width: 100%; /* Ubah dari 1280px menjadi 100% */
-  margin: 0 auto; /* Center content */
-  box-sizing: border-box; /* Include padding in width calculation */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+	flex: 1; /* Allow main content to grow */
+	padding: 0; /* Remove padding as it's handled by child components */
+	width: 100%;
+	max-width: 100%; /* Ubah dari 1280px menjadi 100% */
+	margin: 0 auto; /* Center content */
+	box-sizing: border-box; /* Include padding in width calculation */
+	overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Header styles moved to header.css */
@@ -63,8 +63,70 @@ main {
 
 /* Responsive styles for wider screens */
 @media (min-width: 1280px) {
-  main {
-    max-width: 100%;
-    padding: 0 2rem; /* Tambahkan padding di sisi untuk mencegah konten terlalu dekat dengan tepi */
-  }
+	main {
+		max-width: 100%;
+		padding: 0 2rem; /* Tambahkan padding di sisi untuk mencegah konten terlalu dekat dengan tepi */
+	}
+}
+
+/* Global toast notification (React-managed, via portal) */
+.app-notification {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 9999;
+	max-width: 320px;
+	padding: var(--spacing-sm) var(--spacing-md);
+	border-radius: var(--border-radius-md);
+	box-shadow: var(--shadow-lg);
+	color: white;
+	font-size: var(--font-size-sm);
+	font-weight: 500;
+	background-color: var(--info-color);
+}
+
+.app-notification.message-success {
+	background-color: var(--success-color);
+}
+
+.app-notification.message-error {
+	background-color: var(--error-color);
+}
+
+.app-notification.message-warning {
+	background-color: var(--warning-color);
+}
+
+/* Tag filter (sumber state: URL ?tag=) */
+.tags-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacing-sm);
+	list-style: none;
+	padding: 0;
+	margin: 0 0 var(--spacing-lg);
+}
+
+.tags-list button.tag-item {
+	font: inherit;
+	appearance: none;
+}
+
+/* Ringkasan filter katalog aktif */
+.menu-filter-summary {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--spacing-sm);
+	margin: 0 0 var(--spacing-md);
+	font-size: var(--font-size-sm);
+	color: var(--neutral-700);
+}
+
+.filter-chip {
+	background-color: var(--neutral-100);
+	border: 1px solid var(--neutral-300);
+	border-radius: var(--border-radius-full);
+	padding: 0.15em 0.75em;
+	color: var(--neutral-800);
 }

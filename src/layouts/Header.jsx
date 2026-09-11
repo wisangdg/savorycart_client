@@ -1,89 +1,95 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../components/header/Logo.jsx";
 import Kategori from "../components/header/Kategori.jsx";
 import Search from "../components/header/Search.jsx";
 import CartList from "../components/header/CartList.jsx";
 import AccountIcon from "../components/header/AccountIcon.jsx";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { useQueryCategories } from "../hooks";
 import "../styles/header.css";
 
-// Moved to constants file
-const categoryNameMap = {
-  mainDish: "Utama",
-  snacks: "Snacks",
-  drinks: "Minuman",
-  pastry: "Dessert",
-};
+const Header = () => {
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const navigate = useNavigate();
+	const location = useLocation();
 
-const Header = ({ handleSearchChange, categories = [], onSelectCategory }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	// Kategori diambil dari cache/hook yang sama dengan katalog, sehingga
+	// navigasi kategori tersedia konsisten dari halaman mana pun tanpa perlu
+	// setiap halaman mengoper prop `categories`.
+	const { data: categories } = useQueryCategories();
 
-  const handleSelect = (option) => {
-    onSelectCategory(
-      option._id === "all" ? option : { ...option, name: option.originalName }
-    );
-    setMobileMenuOpen(false);
-  };
+	const categoryOptions =
+		Array.isArray(categories) && categories.length > 0
+			? categories
+			: [{ _id: "all", name: "Semua", originalName: "all" }];
 
-  const safeCategories = Array.isArray(categories) ? categories : [];
-  const categoryOptions = [
-    { _id: "all", name: "Semua", originalName: "all" },
-    ...safeCategories.map((cat) => ({
-      ...cat,
-      name: categoryNameMap[cat.name] || cat.name,
-      originalName: cat.name,
-    })),
-  ];
+	const currentCategory =
+		new URLSearchParams(location.search).get("category") || "all";
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+	// Kategori & pencarian adalah navigasi berbasis URL ke halaman katalog,
+	// sehingga tetap berfungsi dari halaman mana pun (login, akun, pesanan).
+	const handleSelect = (option) => {
+		const params = new URLSearchParams(location.search);
+		const value = option.originalName || option.name;
+		if (!value || value === "all") {
+			params.delete("category");
+		} else {
+			params.set("category", value);
+		}
+		const query = params.toString();
+		navigate(query ? `/?${query}` : "/");
+		setMobileMenuOpen(false);
+	};
 
-  return (
-    <header className="header" role="banner">
-      <div className="skip-link">
-        <a href="#main-content" className="visually-hidden focusable">
-          Skip to main content
-        </a>
-      </div>
+	const toggleMobileMenu = () => {
+		setMobileMenuOpen(!mobileMenuOpen);
+	};
 
-      <div className="header-container">
-        <Logo />
+	return (
+		<header className="header" role="banner">
+			<div className="header-container">
+				<Logo />
 
-        <button
-          className="mobile-menu-button d-lg-none"
-          onClick={toggleMobileMenu}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileMenuOpen}
-        >
-          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
-        </button>
+				<button
+					type="button"
+					className="mobile-menu-button"
+					onClick={toggleMobileMenu}
+					aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"}
+					aria-expanded={mobileMenuOpen}
+				>
+					{mobileMenuOpen ? <FaTimes /> : <FaBars />}
+				</button>
 
-        <nav
-          className={`header-nav ${mobileMenuOpen ? "mobile-active" : ""}`}
-          aria-label="Main Navigation"
-        >
-          <Kategori options={categoryOptions} onSelect={handleSelect} />
-          <div className="d-md-none mobile-search">
-            <Search handleSearchChange={handleSearchChange} />
-          </div>
-        </nav>
+				<nav
+					className={`header-nav ${mobileMenuOpen ? "mobile-active" : ""}`}
+					aria-label="Navigasi utama"
+				>
+					<Kategori
+						options={categoryOptions}
+						value={currentCategory}
+						onSelect={handleSelect}
+					/>
+					<div className="mobile-search">
+						<Search id="search-input-mobile" />
+					</div>
+				</nav>
 
-        <div className="d-none d-lg-block">
-          <Search handleSearchChange={handleSearchChange} />
-        </div>
+				<div className="desktop-search">
+					<Search />
+				</div>
 
-        <div
-          className="header-actions"
-          role="navigation"
-          aria-label="User actions"
-        >
-          <CartList />
-          <AccountIcon />
-        </div>
-      </div>
-    </header>
-  );
+				<div
+					className="header-actions"
+					role="navigation"
+					aria-label="Aksi pengguna"
+				>
+					<CartList />
+					<AccountIcon />
+				</div>
+			</div>
+		</header>
+	);
 };
 
 export default Header;

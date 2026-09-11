@@ -2,18 +2,18 @@
 
 /* Ensure root takes full height for flex */
 #root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  flex: 1; /* Make container grow to fill space */
-  width: 100%; /* Ensure container takes full width */
-  max-width: 100%; /* Ensure no max-width limitation */
-  box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	flex: 1; /* Make container grow to fill space */
+	width: 100%; /* Ensure container takes full width */
+	max-width: 100%; /* Ensure no max-width limitation */
+	box-sizing: border-box;
 }
 
 /* Remove the old rule targeting children */
@@ -23,10 +23,28 @@
 
 /* Add a general main content area styling */
 main {
-  flex: 1; /* Allow main content to grow */
-  width: 100%;
-  max-width: 1280px; /* Add a max-width for larger screens */
-  margin: 0 auto; /* Center content */
-  box-sizing: border-box; /* Include padding in width calculation */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+	flex: 1; /* Allow main content to grow */
+	width: 100%;
+	max-width: 1280px; /* Add a max-width for larger screens */
+	margin: 0 auto; /* Center content */
+	box-sizing: border-box; /* Include padding in width calculation */
+	overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Banner status koneksi server (tampil tanpa menghilangkan shell aplikasi) */
+.server-error-banner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-md);
+	flex-wrap: wrap;
+	padding: var(--spacing-sm) var(--spacing-md);
+	background-color: var(--warning-color);
+	color: white;
+	font-size: var(--font-size-sm);
+	text-align: center;
+}
+
+.server-error-banner .btn {
+	box-shadow: none;
 }

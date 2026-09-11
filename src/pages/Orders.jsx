@@ -1,180 +1,261 @@
 import axiosInstance from "../api/axiosInstance";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import { getSelectedAddress } from "../utils/selectedAddress";
 import "../styles/orders.css";
 
+const PAGE_SIZE = 10;
+
+const formatRupiah = (value) =>
+	value === null || value === undefined
+		? "N/A"
+		: Number(value).toLocaleString("id-ID", {
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 0,
+			});
+
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const token = useSelector((state) => state.auth.token);
-  const location = useLocation();
-  const navigate = useNavigate();
+	const [orders, setOrders] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [loadingMore, setLoadingMore] = useState(false);
+	const [hasMore, setHasMore] = useState(false);
+	const [error, setError] = useState(null);
+	const [navigatingId, setNavigatingId] = useState(null);
+	const [selectedAddress, setSelectedAddress] = useState(null);
+	const token = useSelector((state) => state.auth.token);
+	const user = useSelector((state) => state.auth.user);
+	const location = useLocation();
+	const navigate = useNavigate();
 
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get("/api/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          skip: 0,
-          limit: 10,
-        },
-      });
-      setOrders(response.data.data.reverse() || []);
-    } catch (err) {
-      console.error("Fetch orders error:", err);
-      setError(err.response?.data?.message || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [token]);
+	const fetchOrders = useCallback(
+		async ({ skip = 0, append = false } = {}) => {
+			if (append) {
+				setLoadingMore(true);
+			} else {
+				setLoading(true);
+			}
+			setError(null);
+			try {
+				const response = await axiosInstance.get("/api/orders", {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					params: {
+						skip,
+						limit: PAGE_SIZE,
+					},
+				});
+				const rows = Array.isArray(response.data?.data)
+					? [...response.data.data].reverse()
+					: [];
+				setOrders((prev) => (append ? [...prev, ...rows] : rows));
 
-  useEffect(() => {
-    fetchOrders();
-    const savedAddress = localStorage.getItem("selectedAddress");
-    if (savedAddress) {
-      setSelectedAddress(JSON.parse(savedAddress));
-    }
-  }, [fetchOrders]);
+				const total = response.data?.total ?? response.data?.count;
+				setHasMore(
+					typeof total === "number"
+						? skip + rows.length < total
+						: rows.length === PAGE_SIZE,
+				);
+			} catch (err) {
+				setError(
+					err.response?.data?.message ||
+						err.message ||
+						"Gagal memuat pesanan.",
+				);
+			} finally {
+				setLoading(false);
+				setLoadingMore(false);
+			}
+		},
+		[token],
+	);
 
-  useEffect(() => {
-    if (location.state?.orderCreated) {
-      fetchOrders();
-    }
-  }, [location.state, fetchOrders]);
+	useEffect(() => {
+		fetchOrders();
+	}, [fetchOrders]);
 
-  const handleDeleteOrder = async (orderId) => {
-    try {
-      await axiosInstance.delete(`/api/orders/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      fetchOrders(); // Refresh orders after deletion
-    } catch (err) {
-      console.error("Error deleting order:", err);
-      setError(err.response?.data?.message || "Failed to delete order");
-    }
-  };
+	useEffect(() => {
+		if (location.state?.orderCreated) {
+			fetchOrders();
+		}
+	}, [location.state, fetchOrders]);
 
-  const handleConfirmOrder = async (orderId) => {
-    console.log("Confirming order with ID:", orderId);
+	useEffect(() => {
+		setSelectedAddress(getSelectedAddress(user?._id));
+	}, [user]);
 
-    try {
-      const response = await axiosInstance.post(
-        "/api/invoices",
-        { order_id: orderId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+	const handleLoadMore = () => {
+		fetchOrders({ skip: orders.length, append: true });
+	};
 
-      console.log("Invoice created:", response.data);
-      navigate(`/invoices/${orderId}`);
-    } catch (err) {
-      console.error("Error creating invoice:", err);
-      setError(err.response?.data?.message || "Failed to create invoice");
-    }
-  };
+	// Invoice sudah dibuat server saat checkout, jadi cukup navigasi.
+	const handleViewInvoice = (orderId) => {
+		setNavigatingId(orderId);
+		navigate(`/invoices/${orderId}`);
+	};
 
-  if (loading) return <p className="loading">Loading...</p>;
-  if (error) return <p className="error">Error: {error}</p>;
+	if (loading) {
+		return (
+			<MainLayout>
+				<p className="loading">Memuat pesanan...</p>
+			</MainLayout>
+		);
+	}
 
-  return (
-    <MainLayout>
-      <div className="orders-container">
-        <h1>Orders</h1>
+	return (
+		<MainLayout>
+			<div className="orders-container">
+				<h1>Pesanan</h1>
 
-        {selectedAddress && (
-          <div className="selected-address-container">
-            <h3>Alamat Pengiriman:</h3>
-            <p>
-              {selectedAddress.addressName}, {selectedAddress.kelurahan},
-              {selectedAddress.kecamatan}, {selectedAddress.kabupatenkota},
-              {selectedAddress.provinsi}, {selectedAddress.detail}
-            </p>
-          </div>
-        )}
+				{error && orders.length === 0 && (
+					<div className="orders-error" role="alert">
+						<p className="error">Terjadi kesalahan: {error}</p>
+						<button
+							type="button"
+							className="btn btn-primary"
+							onClick={() => fetchOrders()}
+						>
+							Coba lagi
+						</button>
+					</div>
+				)}
 
-        {orders.length > 0 ? (
-          <ul className="orders-list">
-            {orders.map((order) => (
-              <li key={order._id} className="orders-item">
-                <h3>Order #{order.order_number}</h3>
-                <p>Order id: {order._id}</p>
-                <p>
-                  Status:{" "}
-                  <span className={`status-${order.status}`}>
-                    {order.status}
-                  </span>
-                </p>
-                <p>
-                  Sub Total: Rp.{" "}
-                  {order.sub_total ? order.sub_total.toLocaleString() : "N/A"}
-                </p>
-                <p>
-                  Delivery Fee: Rp.{" "}
-                  {order.delivery_fee
-                    ? order.delivery_fee.toLocaleString()
-                    : "N/A"}
-                </p>
-                <p>
-                  Total: Rp.{" "}
-                  {order.total ? order.total.toLocaleString() : "N/A"}
-                </p>
-                <p>Total Items: {order.items_count}</p>
-                <div className="orders-items">
-                  <h4>Items:</h4>
-                  <ul>
-                    {order.order_items.map((item) => (
-                      <li key={item._id}>
-                        {item.name} - {item.qty}x @ Rp.{" "}
-                        {item.price.toLocaleString()}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {order.delivery_address && (
-                  <div className="delivery-address">
-                    <h4>Delivery Address:</h4>
-                    <p>
-                      {order.delivery_address.detail},{" "}
-                      {order.delivery_address.kelurahan},
-                      {order.delivery_address.kecamatan},{" "}
-                      {order.delivery_address.kabupaten},
-                      {order.delivery_address.provinsi}
-                    </p>
-                  </div>
-                )}
-                <button
-                  onClick={() => handleDeleteOrder(order._id)}
-                  className="delete-order-button"
-                >
-                  Hapus Order
-                </button>
-                <button
-                  onClick={() => handleConfirmOrder(order._id)}
-                  className="confirm-order-button"
-                >
-                  Konfirmasi
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="no-orders">No orders found.</p>
-        )}
-      </div>
-    </MainLayout>
-  );
+				{error && orders.length > 0 && (
+					<p className="error" role="alert">
+						{error}
+					</p>
+				)}
+
+				{selectedAddress && (
+					<div className="selected-address-container">
+						<h3>Alamat Pengiriman:</h3>
+						<p>
+							{selectedAddress.addressName},{" "}
+							{selectedAddress.kelurahan},
+							{selectedAddress.kecamatan},{" "}
+							{selectedAddress.kabupatenkota},
+							{selectedAddress.provinsi}, {selectedAddress.detail}
+						</p>
+					</div>
+				)}
+
+				{orders.length > 0 ? (
+					<>
+						<ul className="orders-list">
+							{orders.map((order) => (
+								<li key={order._id} className="orders-item">
+									<h3>Pesanan #{order.order_number}</h3>
+									<p>ID pesanan: {order._id}</p>
+									<p>
+										Status:{" "}
+										<span
+											className={`status-${order.status}`}
+										>
+											{order.status}
+										</span>
+									</p>
+									<p>
+										Subtotal: Rp.{" "}
+										{formatRupiah(order.sub_total)}
+									</p>
+									<p>
+										Ongkos kirim:{" "}
+										{order.delivery_fee === null ||
+										order.delivery_fee === undefined
+											? "N/A"
+											: Number(order.delivery_fee) === 0
+												? "Gratis"
+												: `Rp. ${formatRupiah(order.delivery_fee)}`}
+									</p>
+									<p>
+										Total: Rp. {formatRupiah(order.total)}
+									</p>
+									<p>Jumlah item: {order.items_count}</p>
+									<div className="orders-items">
+										<h4>Item:</h4>
+										<ul>
+											{order.order_items?.map((item) => (
+												<li key={item._id}>
+													{item.name} - {item.qty}x @
+													Rp.{" "}
+													{formatRupiah(item.price)}
+												</li>
+											))}
+										</ul>
+									</div>
+									{order.delivery_address && (
+										<div className="delivery-address">
+											<h4>Alamat pengiriman:</h4>
+											<p>
+												{order.delivery_address.detail},{" "}
+												{
+													order.delivery_address
+														.kelurahan
+												}
+												,
+												{
+													order.delivery_address
+														.kecamatan
+												}
+												,{" "}
+												{
+													order.delivery_address
+														.kabupaten
+												}
+												,
+												{
+													order.delivery_address
+														.provinsi
+												}
+											</p>
+										</div>
+									)}
+									<button
+										type="button"
+										onClick={() =>
+											handleViewInvoice(order._id)
+										}
+										className="confirm-order-button"
+										disabled={navigatingId === order._id}
+									>
+										Lihat invoice
+									</button>
+								</li>
+							))}
+						</ul>
+
+						{hasMore && (
+							<div className="orders-load-more">
+								<button
+									type="button"
+									className="btn btn-outline"
+									onClick={handleLoadMore}
+									disabled={loadingMore}
+								>
+									{loadingMore ? "Memuat..." : "Muat lainnya"}
+								</button>
+							</div>
+						)}
+					</>
+				) : (
+					!error && (
+						<div className="empty-orders">
+							<p className="no-orders">Belum ada pesanan.</p>
+							<button
+								type="button"
+								className="shop-now"
+								onClick={() => navigate("/")}
+							>
+								Jelajahi menu
+							</button>
+						</div>
+					)
+				)}
+			</div>
+		</MainLayout>
+	);
 };
 
 export default Orders;

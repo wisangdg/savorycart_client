@@ -14,7 +14,7 @@
 /.env
 /.env.development
 /.env.production
-/.env.example
+# .env.example sengaja TIDAK diabaikan agar ikut ke repo sebagai template
 
 # misc
 .DS_Store
@@ -30,3 +30,6 @@ yarn-error.log*
 # Windows Zone.Identifier ADS / stray metadata files
 *:*Zone.Identifier
 *Zone.Identifier
+
+# Screenshot verifikasi browser (artefak lokal, bukan source)
+/browser-review

@@ -10,19 +10,10 @@
  *
  * @module App
  */
-import React, {
-  useEffect,
-  useState,
-  Suspense,
-  lazy,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useEffect, useState, Suspense, lazy, useCallback } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks";
-import { API_ENDPOINTS, ROUTES } from "./constants";
-import axiosInstance from "./api/axiosInstance";
-import { handleApiError } from "./utils/errorHandlers";
+import { ROUTES } from "./constants";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ErrorProvider from "./providers/ErrorProvider";
 import ErrorPage from "./pages/ErrorPage";
@@ -64,45 +55,45 @@ const Invoices = lazy(() => import("./components/Invoices.jsx"));
  * @returns {React.ReactElement} Komponen loading fallback
  */
 const LoadingFallback = React.memo(() => {
-  // Use state to track loading time
-  const [loadingTime, setLoadingTime] = React.useState(0);
+	// Use state to track loading time
+	const [loadingTime, setLoadingTime] = React.useState(0);
 
-  // Update loading time every second
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setLoadingTime((prev) => prev + 1);
-    }, 1000);
+	// Update loading time every second
+	React.useEffect(() => {
+		const timer = setInterval(() => {
+			setLoadingTime((prev) => prev + 1);
+		}, 1000);
 
-    // Cleanup timer on unmount
-    return () => clearInterval(timer);
-  }, []);
+		// Cleanup timer on unmount
+		return () => clearInterval(timer);
+	}, []);
 
-  /**
-   * Mengembalikan pesan yang sesuai berdasarkan durasi loading
-   *
-   * @returns {string} Pesan loading yang sesuai
-   */
-  const getMessage = () => {
-    if (loadingTime < 3) return "Loading...";
-    if (loadingTime < 6) return "Almost there...";
-    return "This is taking longer than expected. Please wait...";
-  };
+	/**
+	 * Mengembalikan pesan yang sesuai berdasarkan durasi loading
+	 *
+	 * @returns {string} Pesan loading yang sesuai
+	 */
+	const getMessage = () => {
+		if (loadingTime < 3) return "Loading...";
+		if (loadingTime < 6) return "Almost there...";
+		return "This is taking longer than expected. Please wait...";
+	};
 
-  return (
-    <div className="loading-fallback">
-      <div className="loading-spinner"></div>
-      <p>{getMessage()}</p>
-      {loadingTime > 8 && (
-        <button
-          className="btn btn-primary mt-3"
-          onClick={() => window.location.reload()}
-          aria-label="Refresh page"
-        >
-          Refresh Page
-        </button>
-      )}
-    </div>
-  );
+	return (
+		<div className="loading-fallback">
+			<div className="loading-spinner"></div>
+			<p>{getMessage()}</p>
+			{loadingTime > 8 && (
+				<button
+					className="btn btn-primary mt-3"
+					onClick={() => window.location.reload()}
+					aria-label="Refresh page"
+				>
+					Refresh Page
+				</button>
+			)}
+		</div>
+	);
 });
 
 /**
@@ -112,175 +103,116 @@ const LoadingFallback = React.memo(() => {
  * @returns {React.ReactElement} Aplikasi React
  */
 function App() {
-  // Get auth state and methods from custom hook
-  const { checkLoginStatus, isAuthenticated } = useAuth();
+	// Get auth state and methods from custom hook
+	const { checkLoginStatus, isAuthenticated } = useAuth();
 
-  // State for categories and search
-  const [categories, setCategories] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [serverStatus, setServerStatus] = useState({
-    isHealthy: false,
-    checking: true,
-  });
+	// Status koneksi server
+	const [serverStatus, setServerStatus] = useState({
+		isHealthy: false,
+		checking: true,
+	});
 
-  /**
-   * Mengambil data kategori dari API
-   *
-   * @async
-   * @returns {Promise<Array>} Array berisi data kategori
-   */
-  const fetchCategories = useCallback(async () => {
-    try {
-      const response = await axiosInstance.get(API_ENDPOINTS.CATEGORIES);
-      return response.data;
-    } catch (error) {
-      handleApiError(error);
-      return [];
-    }
-  }, []);
+	// Check login status on mount
+	useEffect(() => {
+		checkLoginStatus();
+	}, [checkLoginStatus]);
 
-  // Check login status on mount
-  useEffect(() => {
-    checkLoginStatus();
-  }, [checkLoginStatus]);
+	// Check server health on mount with silent retries.
+	// Bisa dipanggil ulang dari tombol "Coba lagi" pada banner koneksi.
+	const checkServer = useCallback(async () => {
+		setServerStatus((prev) => ({ ...prev, checking: true }));
+		const health = await getStartupHealth();
+		setServerStatus({ ...health, checking: false });
+	}, []);
 
-  // Load categories on mount
-  useEffect(() => {
-    /**
-     * Memuat data kategori dan menyimpannya ke state
-     *
-     * @async
-     */
-    const loadCategories = async () => {
-      const fetchedCategories = await fetchCategories();
-      setCategories(fetchedCategories);
-    };
-    loadCategories();
-  }, [fetchCategories]);
+	useEffect(() => {
+		checkServer();
+	}, [checkServer]);
 
-  // Check server health on mount with silent retries
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const health = await getStartupHealth();
-      if (!cancelled) setServerStatus({ ...health, checking: false });
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+	const location = useLocation();
 
-  const location = useLocation();
+	// Tampilkan status koneksi sebagai banner tanpa menghilangkan shell aplikasi.
+	const showConnectionBanner =
+		!serverStatus.checking && !serverStatus.isHealthy;
 
-  // Debounce timer reference
-  const searchTimerRef = useRef(null);
-
-  /**
-   * Menangani perubahan input pencarian dengan debounce
-   * untuk mengurangi jumlah request ke API
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} event - Event perubahan input
-   */
-  const handleSearchChange = useCallback((event) => {
-    const searchValue = event.target.value;
-
-    // Clear previous timer
-    if (searchTimerRef.current) {
-      clearTimeout(searchTimerRef.current);
-    }
-
-    // Set new timer (300ms debounce)
-    searchTimerRef.current = setTimeout(() => {
-      setSearchKeyword(searchValue);
-    }, 300);
-  }, []);
-
-  // Clean up debounce timer on unmount
-  useEffect(() => {
-    return () => {
-      if (searchTimerRef.current) {
-        clearTimeout(searchTimerRef.current);
-      }
-    };
-  }, []);
-
-  // Show server status if not healthy
-  if (serverStatus.checking) {
-    return <LoadingFallback />;
-  }
-
-  if (!serverStatus.isHealthy) {
-    return (
-      <div className="server-error">
-        <h2>Server Connection Error</h2>
-        <p>{serverStatus.message || serverStatus.error}</p>
-        <p style={{ fontSize: "0.85rem", opacity: 0.7 }}>
-          Attempts: {serverStatus.attempts}{" "}
-          {serverStatus.db && `(DB: ${serverStatus.db})`}
-        </p>
-        <button onClick={() => window.location.reload()}>
-          Retry Connection
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <ErrorBoundary>
-      <ErrorProvider>
-        <div>
-          <div className="skip-link">
-            <a href="#main-content" className="visually-hidden focusable">
-              Skip to main content
-            </a>
-          </div>
-          <Suspense fallback={<LoadingFallback />}>
-            <main id="main-content">
-              <Routes>
-                <Route
-                  path={ROUTES.HOME}
-                  element={
-                    <Home
-                      searchKeyword={searchKeyword}
-                      handleSearchChange={handleSearchChange}
-                      categories={categories}
-                    />
-                  }
-                  errorElement={<ErrorPage />}
-                />
-                <Route
-                  path={ROUTES.LOGIN}
-                  element={<Login />}
-                  errorElement={<ErrorPage />}
-                />
-                <Route
-                  path={ROUTES.REGISTER}
-                  element={<Register key={location.pathname} />}
-                  errorElement={<ErrorPage />}
-                />
-                <Route
-                  path={ROUTES.ORDERS}
-                  element={isAuthenticated ? <Orders /> : <Login />}
-                  errorElement={<ErrorPage />}
-                />
-                <Route
-                  path={ROUTES.ACCOUNT}
-                  element={isAuthenticated ? <Account /> : <Login />}
-                  errorElement={<ErrorPage />}
-                />
-                <Route
-                  path={ROUTES.INVOICES(":orderId")}
-                  element={isAuthenticated ? <Invoices /> : <Login />}
-                  errorElement={<ErrorPage />}
-                />
-                <Route path="*" element={<ErrorPage />} />
-              </Routes>
-            </main>
-          </Suspense>
-        </div>
-      </ErrorProvider>
-    </ErrorBoundary>
-  );
+	return (
+		<ErrorBoundary>
+			<ErrorProvider>
+				<div>
+					{showConnectionBanner && (
+						<div className="server-error-banner" role="alert">
+							<span>
+								Tidak dapat terhubung ke server.
+								{serverStatus.message || serverStatus.error
+									? ` ${serverStatus.message || serverStatus.error}`
+									: ""}
+							</span>
+							<button
+								type="button"
+								className="btn btn-primary btn-sm"
+								onClick={checkServer}
+							>
+								Coba lagi
+							</button>
+						</div>
+					)}
+					<Suspense fallback={<LoadingFallback />}>
+						<div className="app-content">
+							<Routes>
+								<Route
+									path={ROUTES.HOME}
+									element={<Home />}
+									errorElement={<ErrorPage />}
+								/>
+								<Route
+									path={ROUTES.LOGIN}
+									element={<Login />}
+									errorElement={<ErrorPage />}
+								/>
+								<Route
+									path={ROUTES.REGISTER}
+									element={
+										<Register key={location.pathname} />
+									}
+									errorElement={<ErrorPage />}
+								/>
+								<Route
+									path={ROUTES.ORDERS}
+									element={
+										isAuthenticated ? <Orders /> : <Login />
+									}
+									errorElement={<ErrorPage />}
+								/>
+								<Route
+									path={ROUTES.ACCOUNT}
+									element={
+										isAuthenticated ? (
+											<Account />
+										) : (
+											<Login />
+										)
+									}
+									errorElement={<ErrorPage />}
+								/>
+								<Route
+									path={ROUTES.INVOICES(":orderId")}
+									element={
+										isAuthenticated ? (
+											<Invoices />
+										) : (
+											<Login />
+										)
+									}
+									errorElement={<ErrorPage />}
+								/>
+								<Route path="*" element={<ErrorPage />} />
+							</Routes>
+						</div>
+					</Suspense>
+				</div>
+			</ErrorProvider>
+		</ErrorBoundary>
+	);
 }
 
 export default App;
