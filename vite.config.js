@@ -5,6 +5,7 @@ import { transform as esbuildTransform } from "esbuild";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	envPrefix: ["VITE_", "REACT_APP_"],
 	plugins: [
 		react(),
 		VitePWA({
